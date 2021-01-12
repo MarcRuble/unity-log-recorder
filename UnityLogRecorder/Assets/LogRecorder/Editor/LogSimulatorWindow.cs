@@ -9,6 +9,7 @@ namespace LogRecorder
     {
         private float pausedByDrag = 0f;
         private float pausedByButton = 0f;
+        private int speedIndex = 2;
         private Texture2D playTexture;
         private Texture2D pauseTexture;
 
@@ -27,11 +28,19 @@ namespace LogRecorder
         private void OnGUI()
         {
             // only in play mode
-            if (!EditorApplication.isPlaying)
+            if (!EditorApplication.isPlaying || LogSimulator.instance.mode != LogRecorderMode.SIMULATE)
                 return;
 
+            // get some usefull variables
             FrameController frameCon = FrameController.instance;
-            Rect progressRect = new Rect(10, 10, position.width, 20);
+            float padding = 15;
+
+
+            /**************/
+            /*** SLIDER ***/
+            /**************/
+            float sliderWidth = 20;
+            Rect progressRect = new Rect(4*padding-sliderWidth/2f, padding, sliderWidth, position.height-6*padding);
 
             // check if progress bar is currently moved
             if (Event.current.type == EventType.MouseDown
@@ -54,12 +63,17 @@ namespace LogRecorder
 
             // progress bar 
             frameCon.SetFrameProgress(
-                EditorGUI.Slider(progressRect, frameCon.GetFrameProgress(), 
+                GUI.VerticalSlider(progressRect, frameCon.GetFrameProgress(), 
                 LogSimulator.instance.minFrame, LogSimulator.instance.maxFrame));
 
-            // pause or resume button
+
+            /********************/
+            /*** PAUSE/RESUME ***/
+            /********************/
             bool running = frameCon.FramesPerUnityFrame != 0f;
-            Rect buttonRect = new Rect(position.x + position.width / 2, 40, 50, 50);
+            float buttonWidth = 50f;
+            Rect buttonRect = new Rect(4 * padding - buttonWidth / 2f,
+                position.height-buttonWidth-padding, buttonWidth, buttonWidth);
             GUIStyle style = new GUIStyle("button");
             style.padding = new RectOffset(10, 10, 10, 10);
             if (GUI.Button(buttonRect, running ? pauseTexture : playTexture, style))
@@ -78,13 +92,41 @@ namespace LogRecorder
                 }
             }
 
-            // speed input
-            Rect speedRect = new Rect(buttonRect.x + position.width / 4, 40, 60, 20);
-            GUI.Label(new Rect(speedRect.x - 60, speedRect.y, 50, 20), "Speed");
-            string speedText = EditorGUI.TextField(speedRect, frameCon.FramesPerUnityFrame.ToString());
-            float trySpeed;
-            if (float.TryParse(speedText, out trySpeed))
-                frameCon.FramesPerUnityFrame = trySpeed;// Utils.StringToFloat(speedText);
+
+            /*************/
+            /*** SPEED ***/
+            /*************/
+            float speedWidth = 60f;
+            float speedHeight = 20f;
+            Rect speedRect = new Rect(buttonRect.x + buttonRect.width + padding + speedWidth,
+                position.height - speedHeight - padding, speedWidth, speedHeight);
+            string[] speedSteps = { "0.5", "0.75", "1.0", "1.5", "2.0" };
+            GUI.Label(new Rect(speedRect.x - speedWidth, speedRect.y, speedWidth, speedHeight), "Speed");
+            int newIndex = EditorGUI.Popup(speedRect, speedIndex, speedSteps);
+            if (newIndex != speedIndex)
+            {
+                speedIndex = newIndex;
+                frameCon.FramesPerUnityFrame = Utils.StringToFloat(speedSteps[speedIndex]);
+            }
+
+            /*******************/
+            /*** ANNOTATIONS ***/
+            /*******************/
+            Dictionary<int, string> annotations = LogSimulator.instance.GetAnnotations();
+            style.padding = new RectOffset(2, 2, 2, 2);
+
+            foreach (int key in annotations.Keys)
+            {
+                float progressFraction = (float)key / (float)LogSimulator.instance.maxFrame;
+                string message = annotations[key];
+                Rect annoRect = new Rect(
+                    progressRect.x + progressRect.width + 2 * padding,
+                    progressRect.y + progressFraction * progressRect.height,
+                    message.Length * 7f,
+                    20f);
+                if (GUI.Button(annoRect, message, style))
+                    frameCon.SetFrameProgress(key);
+            }
         }
 
         private void Update()

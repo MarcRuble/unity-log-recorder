@@ -35,5 +35,10 @@ namespace LogRecorder
         {
             return float.Parse(s.Replace('.', ','));
         }
+
+        public static string GetTimestamp()
+        {
+            return System.DateTime.Now.ToString().Replace(' ', '_').Replace(".", "").Replace(":", "");
+        }
     }
 }

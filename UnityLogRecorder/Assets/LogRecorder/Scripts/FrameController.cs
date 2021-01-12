@@ -10,7 +10,7 @@ namespace LogRecorder
         public float FramesPerUnityFrame
         {
             get { return framesPerUnityFrame; }
-            set { framesPerUnityFrame = value; Debug.Log(value); }
+            set { framesPerUnityFrame = value; }
         }
 
         public int Frame

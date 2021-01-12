@@ -1,17 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace LogRecorder
 {
+    public enum LogRecorderMode
+    {
+        RECORD,
+        SIMULATE,
+        NONE
+    }
+
     public class LogSimulator : MonoBehaviour
     {
         #region PUBLIC ATTRIBUTES
-        // if a simulation should be run
-        public bool simulate = false;
+        // if a recording or simulation should be run
+        public LogRecorderMode mode;
 
-        // gameobject to deactivate when simulating
-        public GameObject globalControl;
+        // event called in simulation mode
+        // to disable game logic and prevent
+        // interference with simulation
+        public UnityEvent disableLogic;
 
         // max and min frame values
         public int minFrame = int.MaxValue, maxFrame = 0;
@@ -26,6 +36,9 @@ namespace LogRecorder
         // for each logger controller,
         // a dictionary mapping frame count to line of values
         private Dictionary<int, string[]>[] logData;
+
+        // mapping frame count to annotation message
+        private Dictionary<int, string> annotations;
         #endregion
 
         #region UNITY INTERFACE
@@ -33,15 +46,16 @@ namespace LogRecorder
         {
             instance = this;
 
-            if (simulate)
+            if (mode == LogRecorderMode.SIMULATE)
             {
                 // deactivate global control scripts
-                if (globalControl != null)
-                    globalControl.SetActive(false);
+                if (disableLogic != null)
+                    disableLogic.Invoke();
 
                 // collect loggers
                 loggers = FindObjectsOfType<LoggerController>();
                 logData = new Dictionary<int, string[]>[loggers.Length];
+                annotations = new Dictionary<int, string>();
 
                 // tell loggers to not save the current run
                 foreach (LoggerController logger in loggers)
@@ -51,7 +65,7 @@ namespace LogRecorder
 
         private void Start()
         {
-            if (!simulate)
+            if (mode != LogRecorderMode.SIMULATE)
                 return;
 
             // read the logged files
@@ -66,9 +80,12 @@ namespace LogRecorder
                 {
                     Debug.LogError("[LogError] Cannot simulate file "
                         + loggers[i].fileName + " without property Frame");
-                    simulate = false;
+                    mode = LogRecorderMode.NONE;
                     return;
                 }
+
+                // find column index of annotation (if available)
+                int annoIndex = Utils.FindStringInArray(table[0], "Annotation");
 
                 // create a dictionary for this logger controller
                 logData[i] = new Dictionary<int, string[]>();
@@ -87,13 +104,17 @@ namespace LogRecorder
 
                     // add this line values to dictionary
                     logData[i].Add(frame, table[l]);
+
+                    // if available and not empty, add annotation to dictionary
+                    if (annoIndex >= 0 && table[l][annoIndex].Length > 0)
+                        annotations.Add(frame, table[l][annoIndex]);
                 }
             }
         }
 
         private void Update()
         {
-            if (!simulate)
+            if (mode != LogRecorderMode.SIMULATE)
                 return;
 
             int currentFrame = FrameController.instance.Frame;
@@ -109,6 +130,13 @@ namespace LogRecorder
                         loggers[i].SetProperty(j, row[j]);
                 }
             }
+        }
+        #endregion
+
+        #region PUBLIC METHODS
+        public Dictionary<int,string> GetAnnotations()
+        {
+            return annotations;
         }
         #endregion
     }

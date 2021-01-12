@@ -28,6 +28,10 @@ namespace LogRecorder
         private Logger[] loggers;
         // list of rows containing the log
         private List<string[]> log;
+        // last saved frame
+        private int lastSavedFrame = -1;
+        // id of folder where this take should be saved
+        private static int folderID = -1;
         #endregion
 
         #region UNITY INTERFACE
@@ -36,6 +40,10 @@ namespace LogRecorder
             // check file name
             if (fileName == "")
                 fileName = gameObject.name;
+
+            // initialize folder ID
+            if (folderID < 0)
+                folderID = 1 + CSVReadWrite.GetHighestFolderName();
 
             // generate a frame logger if necessary
             if (GetComponent<FrameLogger>() == null)
@@ -58,16 +66,22 @@ namespace LogRecorder
 
         private void Update()
         {
-            if (!LogSimulator.instance.simulate
-            &&  mode == LogMode.EACH_FRAME
-            || (mode == LogMode.WAIT_INTERVAL && Time.frameCount % waitInterval == 0))
-                AddLogRow();
+            // if recording mode is selected
+            // and this frame was not already saved (by TriggerLog(annotation))
+            // and the LogMode allows saving now
+            if (LogSimulator.instance.mode == LogRecorderMode.RECORD
+            &&  lastSavedFrame < Time.frameCount
+            &&  (mode == LogMode.EACH_FRAME
+                || (mode == LogMode.WAIT_INTERVAL && Time.frameCount % waitInterval == 0)
+                )
+            )
+                TriggerLog();
         }
 
         private void OnApplicationQuit()
         {
-            if (saveLog)
-                CSVReadWrite.Write(log, fileName);
+            if (saveLog && LogSimulator.instance.mode == LogRecorderMode.RECORD)
+                CSVReadWrite.Write(log, fileName, folderID);
         }
         #endregion
 
@@ -81,19 +95,11 @@ namespace LogRecorder
         // Triggers logging of property values.
         public void TriggerLog(string annotation=null)
         {
-            if (annotation != null)
-            {
-                AnnotationLogger annotate = GetComponent<AnnotationLogger>();
-                if (annotate != null)
-                    annotate.SetValue(annotation);
-                else
-                {
-                    Debug.LogError("[LogError] Could not find an AnnotationLogger, but was given an annotation");
-                    return;
-                }
-            }
-
+            SetAnnotation(annotation);
             AddLogRow();
+
+            if (annotation != null)
+                SetAnnotation("");
         }
         #endregion
 
@@ -106,6 +112,22 @@ namespace LogRecorder
                 row[i] = loggers[i].GetValue();
 
             log.Add(row);
+            lastSavedFrame = Time.frameCount;
+        }
+
+        private void SetAnnotation(string annotation=null)
+        {
+            if (annotation != null)
+            {
+                AnnotationLogger annotate = GetComponent<AnnotationLogger>();
+                if (annotate != null)
+                    annotate.SetValue(annotation);
+                else
+                {
+                    Debug.LogError("[LogError] Could not find an AnnotationLogger, but was given an annotation");
+                    return;
+                }
+            }
         }
         #endregion
     }
