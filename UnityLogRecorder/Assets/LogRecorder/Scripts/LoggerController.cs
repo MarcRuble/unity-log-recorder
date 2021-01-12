@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 namespace LogRecorder
@@ -96,6 +97,11 @@ namespace LogRecorder
         public void TriggerLog(string annotation=null)
         {
             SetAnnotation(annotation);
+
+            // if Update already logged, replace it
+            if (lastSavedFrame == Time.frameCount)
+                log.RemoveAt(log.Count - 1);
+
             AddLogRow();
 
             if (annotation != null)

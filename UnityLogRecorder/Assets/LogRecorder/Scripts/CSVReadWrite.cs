@@ -49,8 +49,17 @@ namespace LogRecorder
                 Debug.LogError("[CSV-READ] Could not read because no numeric folder was available");
                 return null;
             }
-                
-            string[] content = File.ReadAllLines(GetFilePath(name, highestFolder));
+
+            string[] content;
+            try
+            {
+                content = File.ReadAllLines(GetFilePath(name, highestFolder));
+            } 
+            catch(System.Exception e)
+            {
+                Debug.LogError("[CSV-READ] Skipping " + name + " because no file was available");
+                return null;
+            }
 
             // ignore empty last line
             string[][] table = new string[

@@ -72,6 +72,8 @@ namespace LogRecorder
             for (int i = 0; i < loggers.Length; i++)
             {
                 string[][] table = CSVReadWrite.Read(loggers[i].fileName);
+                if (table == null)
+                    continue; // no file -> skip
 
                 // find column index of frame property
                 int frameIndex = Utils.FindStringInArray(table[0], "Frame");
@@ -122,7 +124,7 @@ namespace LogRecorder
             // simulate situation of logged frame
             for (int i = 0; i < loggers.Length; i++)
             {
-                if (logData[i].ContainsKey(currentFrame))
+                if (logData[i] != null && logData[i].ContainsKey(currentFrame))
                 {
                     string[] row = logData[i][currentFrame];
 
