@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace LogRecorder
 {
-    public class TimeLogger : Logger
+    public class TimeLogger : FloatLogger
     {
         // Returns the name of this logger type.
         public override string GetName()
@@ -15,7 +15,7 @@ namespace LogRecorder
         // Returns the current observed value description.
         public override string GetValue()
         {
-            return Time.time.ToString();
+            return Utils.FloatToString(Time.time, decimalPoints);
         }
 
         // Interprets and applies the given value description.

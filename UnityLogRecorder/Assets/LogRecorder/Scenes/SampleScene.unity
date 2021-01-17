@@ -228,13 +228,14 @@ GameObject:
   - component: {fileID: 759075711}
   - component: {fileID: 759075716}
   - component: {fileID: 759075717}
+  - component: {fileID: 759075718}
   m_Layer: 0
   m_Name: RecordedCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &759075711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,8 +250,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   saveLog: 1
   fileName: cube
-  mode: 0
-  waitInterval: 1
+  mode: 1
+  waitInterval: 10
 --- !u!65 &759075712
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -338,6 +339,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   log: 1
+  decimalPoints: 4
 --- !u!114 &759075717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -352,6 +354,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   log: 1
   message: 
+--- !u!114 &759075718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 759075710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4e16e1a15350e345a5d4b3022dc3448, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  log: 1
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -504,7 +519,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Event A
+  m_Text: Show
 --- !u!222 &1045992373
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -543,6 +558,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
+  - {fileID: 1139237078}
   - {fileID: 2039264700}
   - {fileID: 1485539380}
   - {fileID: 1901840697}
@@ -682,7 +698,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Event C
+  m_Text: Hide
 --- !u!222 &1088387063
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -690,6 +706,83 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1088387060}
+  m_CullTransparentMesh: 0
+--- !u!1 &1139237077
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1139237078}
+  - component: {fileID: 1139237080}
+  - component: {fileID: 1139237079}
+  m_Layer: 5
+  m_Name: Header
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1139237078
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139237077}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1055594868}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -823.9, y: 478.9}
+  m_SizeDelta: {x: 131.87, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1139237079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139237077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.084905684, g: 0.084905684, b: 0.084905684, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 23
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: Annotations
+--- !u!222 &1139237080
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139237077}
   m_CullTransparentMesh: 0
 --- !u!1 &1485539379
 GameObject:
@@ -723,11 +816,11 @@ RectTransform:
   m_Children:
   - {fileID: 1825186070}
   m_Father: {fileID: 1055594868}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -810.13, y: 426.3}
+  m_AnchoredPosition: {x: -812.4, y: 405}
   m_SizeDelta: {x: 103.74, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1485539381
@@ -781,7 +874,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Here B occured!
+          m_StringArgument: Cube starts moving around
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1485539382
@@ -991,7 +1084,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Event B
+  m_Text: Move
 --- !u!222 &1825186072
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1032,11 +1125,11 @@ RectTransform:
   m_Children:
   - {fileID: 1088387061}
   m_Father: {fileID: 1055594868}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -810.13, y: 389.7}
+  m_AnchoredPosition: {x: -812.4, y: 368.40002}
   m_SizeDelta: {x: 103.74, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1901840698
@@ -1090,7 +1183,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: C was registered by the system!
+          m_StringArgument: Cube disappears again
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1901840699
@@ -1227,11 +1320,11 @@ RectTransform:
   m_Children:
   - {fileID: 1045992371}
   m_Father: {fileID: 1055594868}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -810.13, y: 462}
+  m_AnchoredPosition: {x: -812.4, y: 440.7}
   m_SizeDelta: {x: 103.74, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2039264701
@@ -1285,7 +1378,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Event A was triggered!
+          m_StringArgument: Cube appears
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &2039264702

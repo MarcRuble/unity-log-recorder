@@ -35,8 +35,39 @@ namespace LogRecorder
         private static int folderID = -1;
         #endregion
 
-        #region UNITY INTERFACE
-        private void Awake()
+        #region EVENT LISTENERS
+        private void OnLogUpdate()
+        {
+            // if recording mode is selected
+            // and this frame was not already saved (by TriggerLog(annotation))
+            // and the LogMode allows saving now
+            if (LogSimulator.instance.mode == LogRecorderMode.RECORD
+            && lastSavedFrame < Time.frameCount
+            && (mode == LogMode.EACH_FRAME
+                || (mode == LogMode.WAIT_INTERVAL && Time.frameCount % waitInterval == 0)
+                )
+            )
+                TriggerLog();
+        }
+
+        private void OnLogSave()
+        {
+            if (saveLog && LogSimulator.instance.mode == LogRecorderMode.RECORD)
+                CSVReadWrite.Write(log, fileName, folderID);
+        }
+        #endregion
+
+        #region PUBLIC METHODS
+        public void Subscribe()
+        {
+            // subscribe to events
+            LogSimulator.OnLogUpdate += OnLogUpdate;
+            LogSimulator.OnLogSave += OnLogSave;
+        }
+
+        // Initializes this logger controller.
+        // Called from outside because gameobject may be inactive.
+        public void Init()
         {
             // check file name
             if (fileName == "")
@@ -65,28 +96,6 @@ namespace LogRecorder
             log.Add(header);
         }
 
-        private void Update()
-        {
-            // if recording mode is selected
-            // and this frame was not already saved (by TriggerLog(annotation))
-            // and the LogMode allows saving now
-            if (LogSimulator.instance.mode == LogRecorderMode.RECORD
-            &&  lastSavedFrame < Time.frameCount
-            &&  (mode == LogMode.EACH_FRAME
-                || (mode == LogMode.WAIT_INTERVAL && Time.frameCount % waitInterval == 0)
-                )
-            )
-                TriggerLog();
-        }
-
-        private void OnApplicationQuit()
-        {
-            if (saveLog && LogSimulator.instance.mode == LogRecorderMode.RECORD)
-                CSVReadWrite.Write(log, fileName, folderID);
-        }
-        #endregion
-
-        #region PUBLIC METHODS
         // Sets the given value for property with given index.
         public void SetProperty(int index, string value)
         {

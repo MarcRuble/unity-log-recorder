@@ -4,24 +4,24 @@ using UnityEngine;
 
 namespace LogRecorder
 {
-    public class ScaleLogger : FloatLogger
+    public class ActivationLogger : Logger
     {
         // Returns the name of this logger type.
         public override string GetName()
         {
-            return "Scale";
+            return "Activation";
         }
 
         // Returns the current observed value description.
         public override string GetValue()
         {
-            return Utils.Vector3ToString(transform.localScale, decimalPoints);
+            return gameObject.activeInHierarchy ? "T" : "F";
         }
 
         // Interprets and applies the given value description.
         public override void SetValue(string value)
         {
-            transform.localScale = Utils.ParseVector3(value);
+            gameObject.SetActive(value.Equals("T"));
         }
     }
 }

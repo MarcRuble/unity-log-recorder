@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace LogRecorder
 {
-    public class PositionLogger : Logger
+    public class PositionLogger : FloatLogger
     {
         // Returns the name of this logger type.
         public override string GetName()
@@ -15,7 +15,7 @@ namespace LogRecorder
         // Returns the current observed value description.
         public override string GetValue()
         {
-            return transform.position.ToString("F7").Replace(",", string.Empty);
+            return Utils.Vector3ToString(transform.position, decimalPoints);
         }
 
         // Interprets and applies the given value description.

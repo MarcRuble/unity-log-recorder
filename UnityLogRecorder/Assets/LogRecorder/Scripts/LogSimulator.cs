@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -29,6 +31,12 @@ namespace LogRecorder
         public static LogSimulator instance;
         #endregion
 
+        #region EVENTS
+        public static event Action OnLogInit;
+        public static event Action OnLogUpdate;
+        public static event Action OnLogSave;
+        #endregion
+
         #region PRIVATE ATTRIBUTES
         // all loggers in the scene
         private LoggerController[] loggers;
@@ -46,21 +54,26 @@ namespace LogRecorder
         {
             instance = this;
 
+            // initialize logger controllers
+            loggers = Resources.FindObjectsOfTypeAll<LoggerController>();
+            foreach (LoggerController logger in loggers)
+            {
+                if (mode == LogRecorderMode.RECORD)
+                    logger.Subscribe();
+
+                logger.Init();
+            }
+
             if (mode == LogRecorderMode.SIMULATE)
             {
                 // deactivate global control scripts
                 if (disableLogic != null)
                     disableLogic.Invoke();
 
-                // collect loggers
-                loggers = FindObjectsOfType<LoggerController>();
+                // initialize log data containers
                 logData = new Dictionary<int, string[]>[loggers.Length];
                 annotations = new Dictionary<int, string>();
-
-                // tell loggers to not save the current run
-                foreach (LoggerController logger in loggers)
-                    logger.saveLog = false;
-            }
+            }  
         }
 
         private void Start()
@@ -116,6 +129,8 @@ namespace LogRecorder
 
         private void Update()
         {
+            if (mode == LogRecorderMode.RECORD)
+                OnLogUpdate();
             if (mode != LogRecorderMode.SIMULATE)
                 return;
 
@@ -132,6 +147,12 @@ namespace LogRecorder
                         loggers[i].SetProperty(j, row[j]);
                 }
             }
+        }
+
+        private void OnApplicationQuit()
+        {
+            if (mode == LogRecorderMode.RECORD)
+                OnLogSave();
         }
         #endregion
 
