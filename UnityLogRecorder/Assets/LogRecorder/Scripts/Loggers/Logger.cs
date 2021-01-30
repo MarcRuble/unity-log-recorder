@@ -9,9 +9,6 @@ namespace LogRecorder
      * */
     public abstract class Logger : MonoBehaviour
     {
-        [Tooltip("If this logger should be logging")]
-        public bool log = true;
-
         // Returns the name of this logger type.
         public abstract string GetName();
 

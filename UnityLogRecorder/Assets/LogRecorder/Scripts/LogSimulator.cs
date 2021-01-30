@@ -32,7 +32,6 @@ namespace LogRecorder
         #endregion
 
         #region EVENTS
-        public static event Action OnLogInit;
         public static event Action OnLogUpdate;
         public static event Action OnLogSave;
         #endregion
