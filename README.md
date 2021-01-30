@@ -54,13 +54,13 @@ public abstract string GetValue();
 // Interprets and applies the given value description.
 public abstract void SetValue(string value);
 ```
-For an example illustrating how to put this interface to use, please see the [`ActivationLogger`](UnityLogRecorder/Assets/LogRecorder/Scripts/Logger/ActivationLogger.cs).\
+For an example illustrating how to put this interface to use, please see the [`ActivationLogger`](UnityLogRecorder/Assets/LogRecorder/Scripts/Loggers/ActivationLogger.cs).\
 The `FloatLogger` is an extension thereof which adds a parameter for the user to set in the UnityEditor depending on precision needs:
 ```
 [Tooltip("Number of decimal points saved for floating point attributes")]
 public int decimalPoints = 4;
 ```
-A good example for this type is the [`PositionLogger`](UnityLogRecorder/Assets/LogRecorder/Scripts/Logger/PositionLogger.cs).
+A good example for this type is the [`PositionLogger`](UnityLogRecorder/Assets/LogRecorder/Scripts/Loggers/PositionLogger.cs).
 
 ### Add annotations
 To enable logging of annotations in the style `Cube has been moved`, we add `AnnotationLogger` components to both our sphere and cube.\
