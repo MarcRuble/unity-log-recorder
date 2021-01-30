@@ -26,6 +26,7 @@ namespace LogRecorder
         public UnityEvent disableLogic;
 
         // max and min frame values
+        [HideInInspector()]
         public int minFrame = int.MaxValue, maxFrame = 0;
 
         public static LogSimulator instance;
